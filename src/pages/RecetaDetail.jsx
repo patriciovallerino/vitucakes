@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { calcCostoReceta, formatARS } from '../utils/calc'
+import { calcCostoInsumos, calcGastosIndirectos, calcCostoTotal, formatARS, GASTOS_INDIRECTOS } from '../utils/calc'
 
 export default function RecetaDetail({ receta, insumos, onBack, onUpdate, onDelete }) {
   const [margen, setMargen] = useState(receta.margen)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
-  const costo = calcCostoReceta(receta, insumos)
+  const costoInsumos = calcCostoInsumos(receta, insumos)
+  const indirectos = calcGastosIndirectos(costoInsumos)
+  const costo = calcCostoTotal(costoInsumos)
   const costoPorUnidad = receta.rinde > 0 ? costo / receta.rinde : 0
   const precioVenta = costoPorUnidad * margen
 
@@ -109,7 +111,7 @@ export default function RecetaDetail({ receta, insumos, onBack, onUpdate, onDele
               const ins = insumos.find((i) => i.id === ing.insumoId)
               if (!ins) return null
               const costoIng = ing.cantidad * ins.precioPorUnidad
-              const pct = costo > 0 ? (costoIng / costo) * 100 : 0
+              const pct = costoInsumos > 0 ? (costoIng / costoInsumos) * 100 : 0
               return (
                 <div key={ing.insumoId}>
                   <div className="flex justify-between items-center mb-1">
@@ -126,9 +128,19 @@ export default function RecetaDetail({ receta, insumos, onBack, onUpdate, onDele
               )
             })}
           </div>
-          <div className="mt-4 pt-3 border-t border-brand-100 flex justify-between items-center">
-            <span className="text-sm font-bold text-gray-700">Costo total</span>
-            <span className="text-lg font-black text-gray-800">{formatARS(costo)}</span>
+          <div className="mt-4 pt-3 border-t border-brand-100 space-y-1.5">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600">Costo de insumos</span>
+              <span className="text-sm font-semibold text-gray-700">{formatARS(costoInsumos)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600">Gastos indirectos ({Math.round(GASTOS_INDIRECTOS * 100)}%)</span>
+              <span className="text-sm font-semibold text-gray-700">{formatARS(indirectos)}</span>
+            </div>
+            <div className="pt-1.5 border-t border-brand-50 flex justify-between items-center">
+              <span className="text-sm font-bold text-gray-800">Costo total</span>
+              <span className="text-lg font-black text-gray-800">{formatARS(costo)}</span>
+            </div>
           </div>
         </div>
 
@@ -136,6 +148,8 @@ export default function RecetaDetail({ receta, insumos, onBack, onUpdate, onDele
         <div className="bg-white rounded-2xl p-4 shadow-sm border border-brand-50">
           <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Resumen</p>
           <div className="space-y-2">
+            <Row label="Costo de insumos" value={formatARS(costoInsumos)} />
+            <Row label={`Indirectos (${Math.round(GASTOS_INDIRECTOS * 100)}%)`} value={formatARS(indirectos)} />
             <Row label="Costo total" value={formatARS(costo)} />
             <Row label={`Costo por ${receta.unidadRinde.replace(/s$/, '')}`} value={formatARS(costoPorUnidad)} />
             <Row label={`Ganancia por ${receta.unidadRinde.replace(/s$/, '')}`} value={formatARS(precioVenta - costoPorUnidad)} highlight />
