@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import InsumosPage from './pages/InsumosPage'
 import RecetasPage from './pages/RecetasPage'
@@ -10,6 +10,23 @@ export default function App() {
   const [selectedId, setSelectedId] = useState(null)
   const [insumos, setInsumos] = useLocalStorage('vitucakes_insumos', [])
   const [recetas, setRecetas] = useLocalStorage('vitucakes_recetas', [])
+
+  useEffect(() => {
+    if (insumos.length === 0 && recetas.length === 0 && !localStorage.getItem('vitucakes_precarga_done')) {
+      const url = `${import.meta.env.BASE_URL}precarga.json`
+      fetch(url)
+        .then((r) => r.ok ? r.json() : null)
+        .then((data) => {
+          if (data?.insumos && data?.recetas) {
+            setInsumos(data.insumos)
+            setRecetas(data.recetas)
+            localStorage.setItem('vitucakes_precarga_done', '1')
+          }
+        })
+        .catch(() => {})
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const navigate = (to, id = null) => {
     setPage(to)

@@ -10,6 +10,11 @@ export default function RecetasPage({ recetas, setRecetas, insumos, onSelect }) 
   const [editId, setEditId] = useState(null)
   const [form, setForm] = useState(EMPTY_RECETA)
   const [ingForm, setIngForm] = useState(EMPTY_ING)
+  const [search, setSearch] = useState('')
+
+  const filteredRecetas = recetas.filter((r) =>
+    r.nombre.toLowerCase().includes(search.toLowerCase())
+  )
 
   const openAdd = () => { setEditId(null); setForm(EMPTY_RECETA); setIngForm(EMPTY_ING); setOpen(true) }
 
@@ -56,13 +61,20 @@ export default function RecetasPage({ recetas, setRecetas, insumos, onSelect }) 
   return (
     <div className="flex flex-col min-h-full">
       {/* Header */}
-      <div className="bg-white px-5 pt-14 pb-5 sticky top-0 z-10 shadow-sm">
-        <div className="flex items-center justify-between">
+      <div className="bg-white px-5 pt-14 pb-4 sticky top-0 z-10 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">Recetas</h1>
             <p className="text-xs text-gray-400 mt-0.5">{recetas.length} receta{recetas.length !== 1 ? 's' : ''}</p>
           </div>
         </div>
+        <input
+          type="text"
+          placeholder="Buscar receta..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full px-4 py-2.5 rounded-xl bg-brand-50 border border-brand-100 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
+        />
       </div>
 
       {/* List */}
@@ -74,7 +86,12 @@ export default function RecetasPage({ recetas, setRecetas, insumos, onSelect }) 
             <p className="text-sm mt-1">Tocá el botón + para crear una</p>
           </div>
         )}
-        {recetas.map((r) => {
+        {recetas.length > 0 && filteredRecetas.length === 0 && (
+          <div className="text-center py-16 text-gray-400">
+            <p className="text-sm">No hay recetas que coincidan con "{search}"</p>
+          </div>
+        )}
+        {filteredRecetas.map((r) => {
           const costo = calcCostoReceta(r, insumos)
           const precioVenta = r.rinde > 0 ? (costo / r.rinde) * r.margen : 0
           const tieneProblema = r.ingredientes.some((ing) => {
