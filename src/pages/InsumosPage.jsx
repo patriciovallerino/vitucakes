@@ -39,16 +39,17 @@ export default function InsumosPage({ insumos, setInsumos }) {
     setOpen(true)
   }
 
-  const calcPrice = () => {
+  const computedPrecio = (() => {
     const t = parseFloat(form.totalPagado)
     const c = parseFloat(form.cantidadComprada)
-    if (t > 0 && c > 0) setForm((f) => ({ ...f, precioPorUnidad: (t / c).toFixed(2) }))
-  }
+    if (t > 0 && c > 0) return t / c
+    return parseFloat(form.precioPorUnidad) || 0
+  })()
 
   const handleSave = () => {
     const nombre = form.nombre.trim()
-    const precio = parseFloat(form.precioPorUnidad)
-    if (!nombre || isNaN(precio) || precio <= 0) return
+    const precio = computedPrecio
+    if (!nombre || precio <= 0) return
     if (editId) {
       setInsumos((prev) => prev.map((i) => {
         if (i.id !== editId) return i
@@ -150,35 +151,27 @@ export default function InsumosPage({ insumos, setInsumos }) {
             </select>
           </div>
 
-          {/* Price calculator helper */}
-          <div className="bg-brand-50 rounded-2xl p-4 space-y-3">
-            <p className="text-xs font-semibold text-brand-600 uppercase tracking-wide">Calculadora de precio</p>
-            <div className="flex gap-2">
-              <div className="flex-1">
-                <label className="label">Total pagado ($)</label>
-                <input type="number" {...field('totalPagado')} placeholder="Ej: 6000" className="input" />
-              </div>
-              <div className="flex-1">
-                <label className="label">Cantidad ({form.unidad})</label>
-                <input type="number" {...field('cantidadComprada')} placeholder="Ej: 5" className="input" />
-              </div>
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <label className="label">Total pagado ($)</label>
+              <input type="number" {...field('totalPagado')} placeholder="Ej: 6000" className="input" />
             </div>
-            <button
-              onClick={calcPrice}
-              className="w-full py-2 rounded-xl bg-brand-400 text-white text-sm font-semibold active:scale-95 transition-transform"
-            >
-              Calcular precio por {form.unidad}
-            </button>
+            <div className="flex-1">
+              <label className="label">Cantidad ({form.unidad})</label>
+              <input type="number" {...field('cantidadComprada')} placeholder="Ej: 5" className="input" />
+            </div>
           </div>
 
           <div>
             <label className="label">Precio por {form.unidad} ($)</label>
-            <input type="number" {...field('precioPorUnidad')} placeholder="Ej: 1200" className="input font-semibold text-brand-600" />
+            <div className="input font-semibold text-brand-600 bg-gray-50">
+              {computedPrecio > 0 ? computedPrecio.toLocaleString('es-AR', { maximumFractionDigits: 2 }) : '—'}
+            </div>
           </div>
 
           <button
             onClick={handleSave}
-            disabled={!form.nombre.trim() || !form.precioPorUnidad}
+            disabled={!form.nombre.trim() || computedPrecio <= 0}
             className="w-full py-3.5 rounded-2xl bg-brand-500 text-white font-bold text-base disabled:opacity-40 active:scale-95 transition-transform mt-2"
           >
             {editId ? 'Guardar cambios' : 'Agregar insumo'}
