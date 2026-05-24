@@ -1,9 +1,12 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import BottomSheet from '../components/BottomSheet'
 import { calcCostoInsumos, calcGastosIndirectos, calcCostoTotal, formatARS, GASTOS_INDIRECTOS, MARGEN } from '../utils/calc'
-import { proponerSugerencia, matchesConDetalle, promedioCompetencia } from '../utils/competencia'
+import { proponerSugerencia, matchesConDetalle, promedioCompetencia, productosDisponibles } from '../utils/competencia'
 
 export default function RecetaDetail({ receta, insumos, competidoras = [], onBack, onUpdate, onDelete }) {
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [matchManualOpen, setMatchManualOpen] = useState(false)
+  const [matchSearch, setMatchSearch] = useState('')
 
   const costoInsumos = calcCostoInsumos(receta, insumos)
   const indirectos = calcGastosIndirectos(costoInsumos)
@@ -52,6 +55,31 @@ export default function RecetaDetail({ receta, insumos, competidoras = [], onBac
       ),
     })
   }
+
+  // Match manual: el user busca un producto de competencia y lo elige
+  // como equivalente, sin importar si el algoritmo automático lo hubiera
+  // pescado o no. También limpia el "rechazo" previo en caso de que existiera.
+  const elegirMatchManual = (p) => {
+    onUpdate({
+      ...receta,
+      matchesCompetencia: [
+        ...(receta.matchesCompetencia ?? []),
+        { competidoraId: p.competidoraId, productoSlug: p.productoSlug },
+      ],
+      rechazadosCompetencia: (receta.rechazadosCompetencia ?? []).filter(
+        (r) => !(r.competidoraId === p.competidoraId && r.productoSlug === p.productoSlug),
+      ),
+    })
+    setMatchManualOpen(false)
+    setMatchSearch('')
+  }
+
+  const productosParaElegir = useMemo(
+    () => productosDisponibles(receta, competidoras, matchSearch),
+    [receta, competidoras, matchSearch],
+  )
+
+  const hayCompetidorasCargadas = (competidoras ?? []).some((c) => (c.productos ?? []).length > 0)
 
   return (
     <div className="flex flex-col min-h-full bg-brand-50">
@@ -154,8 +182,8 @@ export default function RecetaDetail({ receta, insumos, competidoras = [], onBac
           </div>
         </div>
 
-        {/* Comparador con competencia — debajo del hero si hay matches */}
-        {matches.length > 0 && (
+        {/* Comparador con competencia — siempre visible si hay competidoras cargadas */}
+        {hayCompetidorasCargadas && (
           <div className="bg-white rounded-2xl p-4 shadow-sm border border-brand-50">
             <div className="flex items-center justify-between mb-3">
               <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">
@@ -186,49 +214,70 @@ export default function RecetaDetail({ receta, insumos, competidoras = [], onBac
               </div>
             )}
 
-            <div className="space-y-2">
-              {matches.map((m) => {
-                const diff = precioVenta > 0
-                  ? ((precioVenta - m.productoPrecio) / m.productoPrecio) * 100
-                  : null
-                return (
-                  <div key={`${m.competidoraId}-${m.productoSlug}`} className="bg-brand-50 rounded-xl p-3">
-                    <div className="flex items-start justify-between gap-2 mb-1.5">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-gray-800">{m.competidoraNombre}</p>
-                        <p className="text-[11px] text-gray-500 truncate">{m.productoNombre}</p>
+            {matches.length > 0 ? (
+              <div className="space-y-2">
+                {matches.map((m) => {
+                  const diff = precioVenta > 0
+                    ? ((precioVenta - m.productoPrecio) / m.productoPrecio) * 100
+                    : null
+                  return (
+                    <div key={`${m.competidoraId}-${m.productoSlug}`} className="bg-brand-50 rounded-xl p-3">
+                      <div className="flex items-start justify-between gap-2 mb-1.5">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-bold text-gray-800">{m.competidoraNombre}</p>
+                          <p className="text-[11px] text-gray-500 truncate">{m.productoNombre}</p>
+                        </div>
+                        <span className="text-base font-black text-brand-600 flex-shrink-0">{formatARS(m.productoPrecio)}</span>
                       </div>
-                      <span className="text-base font-black text-brand-600 flex-shrink-0">{formatARS(m.productoPrecio)}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-[11px]">
-                      <div className="flex gap-3">
-                        {m.productoUrl && (
-                          <a
-                            href={m.productoUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-brand-500 font-semibold"
+                      <div className="flex items-center justify-between text-[11px]">
+                        <div className="flex gap-3">
+                          {m.productoUrl && (
+                            <a
+                              href={m.productoUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-brand-500 font-semibold"
+                            >
+                              Ver ↗
+                            </a>
+                          )}
+                          <button
+                            onClick={() => quitarMatch(m)}
+                            className="text-gray-400"
                           >
-                            Ver ↗
-                          </a>
+                            Quitar match
+                          </button>
+                        </div>
+                        {diff !== null && matches.length === 1 && (
+                          <span className={diff > 0 ? 'text-amber-700 font-semibold' : diff < 0 ? 'text-emerald-700 font-semibold' : 'text-gray-500'}>
+                            {diff > 0 ? '+' : ''}{diff.toFixed(0)}% vs vos
+                          </span>
                         )}
-                        <button
-                          onClick={() => quitarMatch(m)}
-                          className="text-gray-400"
-                        >
-                          Quitar match
-                        </button>
                       </div>
-                      {diff !== null && matches.length === 1 && (
-                        <span className={diff > 0 ? 'text-amber-700 font-semibold' : diff < 0 ? 'text-emerald-700 font-semibold' : 'text-gray-500'}>
-                          {diff > 0 ? '+' : ''}{diff.toFixed(0)}% vs vos
-                        </span>
-                      )}
                     </div>
-                  </div>
-                )
-              })}
-            </div>
+                  )
+                })}
+              </div>
+            ) : (
+              // Sin matches todavía: mensaje discreto. Si arriba está la card
+              // de sugerencia automática, esta queda como complemento.
+              <p className="text-sm text-gray-500 text-center py-2">
+                {sugerencia
+                  ? 'Confirmá o rechazá la sugerencia de arriba, o elegí manualmente.'
+                  : 'Todavía no matcheaste este producto con nadie de la competencia.'}
+              </p>
+            )}
+
+            {/* Botón para abrir match manual: siempre disponible si hay productos
+                disponibles para elegir. Texto cambia según haya o no matches. */}
+            {productosDisponibles(receta, competidoras).length > 0 && (
+              <button
+                onClick={() => setMatchManualOpen(true)}
+                className="w-full mt-3 py-2.5 rounded-xl bg-brand-50 text-brand-600 font-semibold text-sm active:scale-95 transition-transform"
+              >
+                {matches.length > 0 ? '+ Agregar otro match' : 'Elegir manualmente'}
+              </button>
+            )}
           </div>
         )}
 
@@ -289,6 +338,54 @@ export default function RecetaDetail({ receta, insumos, competidoras = [], onBac
           </div>
         </div>
       </div>
+
+      {/* Match manual: sheet con buscador + lista de productos */}
+      <BottomSheet
+        isOpen={matchManualOpen}
+        onClose={() => { setMatchManualOpen(false); setMatchSearch('') }}
+        title="Elegir match manual"
+      >
+        <div className="space-y-3">
+          <p className="text-xs text-gray-500">
+            Buscá el producto de la competencia que equivale a <span className="font-semibold text-gray-700">{receta.nombre}</span>.
+          </p>
+          <input
+            type="text"
+            placeholder="Buscar por nombre o descripción..."
+            value={matchSearch}
+            onChange={(e) => setMatchSearch(e.target.value)}
+            className="input"
+            autoFocus
+          />
+          {productosParaElegir.length === 0 && (
+            <p className="text-sm text-gray-400 text-center py-6">
+              {matchSearch
+                ? `No hay productos que coincidan con "${matchSearch}"`
+                : 'No hay productos disponibles para matchear.'}
+            </p>
+          )}
+          <div className="space-y-2">
+            {productosParaElegir.map((p) => (
+              <button
+                key={`${p.competidoraId}-${p.productoSlug}`}
+                onClick={() => elegirMatchManual(p)}
+                className="w-full text-left bg-brand-50 rounded-xl p-3 active:scale-[0.98] transition-transform"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] font-semibold text-brand-500 uppercase tracking-wide">{p.competidoraNombre}</p>
+                    <p className="text-sm font-bold text-gray-800 mt-0.5">{p.productoNombre}</p>
+                    {p.productoDescripcion && (
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">{p.productoDescripcion}</p>
+                    )}
+                  </div>
+                  <span className="text-base font-black text-brand-600 flex-shrink-0">{formatARS(p.productoPrecio)}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </BottomSheet>
 
       {/* Delete confirm */}
       {confirmDelete && (

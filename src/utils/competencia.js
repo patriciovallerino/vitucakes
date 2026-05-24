@@ -158,3 +158,41 @@ export function promedioCompetencia(matches) {
   const sum = matches.reduce((s, m) => s + (m.productoPrecio ?? 0), 0)
   return sum / matches.length
 }
+
+// Devuelve todos los productos de la competencia que esta receta todavía no
+// matcheó (ni siquiera rechazó). Útil para la pantalla de "match manual"
+// donde el user busca y elige el equivalente cuando los nombres no se parecen
+// (ej. 'Lemon pie' ↔ 'Alimonada').
+//
+// Opcionalmente filtra por un texto de búsqueda (sin acentos, case-insensitive).
+export function productosDisponibles(receta, competidoras, search = '') {
+  const matches = receta.matchesCompetencia ?? []
+  const yaMatcheado = (compId, slug) =>
+    matches.some((m) => m.competidoraId === compId && m.productoSlug === slug)
+
+  const norm = (s) =>
+    (s ?? '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+
+  const q = norm(search.trim())
+
+  const out = []
+  for (const comp of competidoras ?? []) {
+    for (const p of comp.productos ?? []) {
+      if (yaMatcheado(comp.id, p.slug)) continue
+      if (q && !norm(p.nombre).includes(q) && !norm(p.descripcion).includes(q)) continue
+      out.push({
+        competidoraId: comp.id,
+        competidoraNombre: comp.nombre,
+        productoSlug: p.slug,
+        productoNombre: p.nombre,
+        productoPrecio: p.precio,
+        productoUrl: p.url,
+        productoDescripcion: p.descripcion,
+      })
+    }
+  }
+  return out
+}
