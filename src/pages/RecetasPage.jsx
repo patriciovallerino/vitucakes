@@ -98,7 +98,10 @@ export default function RecetasPage({ recetas, setRecetas, insumos, competidoras
               <span>🤔{pendientesMatch.length > 0 ? ` ${pendientesMatch.length}` : ''}</span>
             </button>
           )}
-          {onBackup && (
+          {/* Cassette 💾: aparece solo cuando hace falta bajar un backup
+              (≥14 días sin uno o nunca). Si tenés un backup reciente, no
+              hay ruido visual — el banner amarillo abajo también desaparece. */}
+          {onBackup && mostrarRecordatorioBackup && (
             <button
               onClick={onBackup}
               className="w-9 h-9 flex items-center justify-center rounded-full bg-brand-50 text-base flex-shrink-0"
