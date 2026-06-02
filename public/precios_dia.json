@@ -1,15 +1,15 @@
 {
-  "generadoEn": "2026-06-01T11:54:01.653Z",
+  "generadoEn": "2026-06-02T06:59:42.163Z",
   "fuente": "Día",
   "items": [
     {
       "nombre": "Aceite",
-      "precio": 3.09,
+      "precio": 3.5933,
       "unidad": "ml",
-      "producto": "Aceite de Girasol Legítimo 1,5 Lt.",
+      "producto": "Aceite de Girasol Dia 1,5 Lt.",
       "diaQty": 1500,
       "diaUnit": "ml",
-      "diaPrecioTotal": 4635,
+      "diaPrecioTotal": 5390,
       "match": "curado"
     },
     {
@@ -24,12 +24,12 @@
     },
     {
       "nombre": "Azúcar",
-      "precio": 1.1,
+      "precio": 1.18,
       "unidad": "g",
-      "producto": "Azúcar Común tipo A Domino 1 Kg.",
-      "diaQty": 1000,
+      "producto": "Azúcar Azucel Común tipo \"A\" 500 Gr.",
+      "diaQty": 500,
       "diaUnit": "g",
-      "diaPrecioTotal": 1100,
+      "diaPrecioTotal": 590,
       "match": "curado"
     },
     {
@@ -174,19 +174,19 @@
     },
     {
       "nombre": "Crema de leche",
-      "precio": 8.52,
+      "precio": 10.005,
       "unidad": "g",
-      "producto": "Crema De Leche Para Cocinar Las Tres Niñas 500 Ml.",
-      "diaQty": 500,
+      "producto": "Crema de Leche DIA Larga Vida 200 Ml.",
+      "diaQty": 200,
       "diaUnit": "ml",
-      "diaPrecioTotal": 4260,
+      "diaPrecioTotal": 2001,
       "match": "curado"
     },
     {
       "nombre": "Dulce de leche",
       "precio": 5.5,
       "unidad": "g",
-      "producto": "Dulce de Leche Dia 400 Gr.",
+      "producto": "Dulce de Leche Light DIA 400 Gr.",
       "diaQty": 400,
       "diaUnit": "g",
       "diaPrecioTotal": 2200,
@@ -214,12 +214,12 @@
     },
     {
       "nombre": "frutos rojos congelados",
-      "precio": 14.8286,
+      "precio": 21.4,
       "unidad": "g",
       "producto": "Frutos Rojos Congelados Dia 350 Gr",
       "diaQty": 350,
       "diaUnit": "g",
-      "diaPrecioTotal": 5190,
+      "diaPrecioTotal": 7490,
       "match": "curado"
     },
     {
@@ -264,22 +264,22 @@
     },
     {
       "nombre": "Harina 0000",
-      "precio": 0.895,
+      "precio": 1.1,
       "unidad": "g",
-      "producto": "Harina 0000 Caserita 1 Kg.",
+      "producto": "Harina de Trigo 0000 DIA 1 Kg.",
       "diaQty": 1000,
       "diaUnit": "g",
-      "diaPrecioTotal": 895,
+      "diaPrecioTotal": 1100,
       "match": "curado"
     },
     {
       "nombre": "Harina leudante",
-      "precio": 1.13,
+      "precio": 1.289,
       "unidad": "g",
-      "producto": "Harina Leudante Caserita 1 Kg.",
+      "producto": "Harina Leudante DIA 1 Kg.",
       "diaQty": 1000,
       "diaUnit": "g",
-      "diaPrecioTotal": 1130,
+      "diaPrecioTotal": 1289,
       "match": "curado"
     },
     {
@@ -294,12 +294,12 @@
     },
     {
       "nombre": "Jamón cocido",
-      "precio": 24.7387,
+      "precio": 30.4333,
       "unidad": "g",
-      "producto": "Jamón Cocido Fetas Finas Dia 200 Gr.",
-      "diaQty": 200,
+      "producto": "Jamón Cocido Lario Feteado 150 Gr.",
+      "diaQty": 150,
       "diaUnit": "g",
-      "diaPrecioTotal": 4947.75,
+      "diaPrecioTotal": 4565,
       "match": "curado"
     },
     {
@@ -314,22 +314,22 @@
     },
     {
       "nombre": "Lata de durazno",
-      "precio": 2120,
+      "precio": 2650,
       "unidad": "u",
       "producto": "Durazno en Mitades DIA 820 Gr.",
       "diaQty": 1,
       "diaUnit": "u",
-      "diaPrecioTotal": 2120,
+      "diaPrecioTotal": 2650,
       "match": "curado"
     },
     {
       "nombre": "Leche",
-      "precio": 1.87,
+      "precio": 1.925,
       "unidad": "ml",
-      "producto": "Leche Entera DIA Larga Vida 1 Lt.",
+      "producto": "Leche fresca La Serenisima Reducida en Lactosa 1 Lt.",
       "diaQty": 1000,
       "diaUnit": "ml",
-      "diaPrecioTotal": 1870,
+      "diaPrecioTotal": 1925,
       "match": "curado"
     },
     {
@@ -374,12 +374,12 @@
     },
     {
       "nombre": "Manteca",
-      "precio": 15.35,
+      "precio": 17.255,
       "unidad": "g",
-      "producto": "Manteca Tonadita Extra calidad 200 Gr.",
+      "producto": "Manteca DIA Calidad Extra 200 Gr.",
       "diaQty": 200,
       "diaUnit": "g",
-      "diaPrecioTotal": 3070,
+      "diaPrecioTotal": 3451,
       "match": "curado"
     },
     {
@@ -404,12 +404,12 @@
     },
     {
       "nombre": "Mayonesa",
-      "precio": 3.13,
+      "precio": 3.6998,
       "unidad": "g",
-      "producto": "Mayonesa Pouch Danica 500 Gr.",
-      "diaQty": 500,
+      "producto": "Mayonesa Dia 846 Gr.",
+      "diaQty": 846,
       "diaUnit": "g",
-      "diaPrecioTotal": 1565,
+      "diaPrecioTotal": 3130,
       "match": "curado"
     },
     {
@@ -484,12 +484,12 @@
     },
     {
       "nombre": "Oreos",
-      "precio": 11.3983,
+      "precio": 17.5424,
       "unidad": "g",
-      "producto": "Galletitas Oreo Golden Sabor Vainilla Rellenas Con Crema 354 Gr.",
+      "producto": "Galletitas Oreo Rellenas Con Crema Sabor Original 354 Gr.",
       "diaQty": 354,
       "diaUnit": "g",
-      "diaPrecioTotal": 4035,
+      "diaPrecioTotal": 6210,
       "match": "curado"
     },
     {
@@ -534,12 +534,12 @@
     },
     {
       "nombre": "Queso Crema",
-      "precio": 8.5862,
+      "precio": 10.6042,
       "unidad": "g",
-      "producto": "Queso de Crema Clásico La Paulina 290 Gr.",
-      "diaQty": 290,
+      "producto": "Queso Crema Clásico Dia 480 Gr.",
+      "diaQty": 480,
       "diaUnit": "g",
-      "diaPrecioTotal": 2490,
+      "diaPrecioTotal": 5090,
       "match": "curado"
     },
     {
@@ -684,12 +684,12 @@
     },
     {
       "nombre": "Pan rallado",
-      "precio": 2.025,
+      "precio": 2.09,
       "unidad": "g",
-      "producto": "Pan Rallado Dia 500 Gr.",
-      "diaQty": 500,
+      "producto": "Pan Rallado Morixe 1 Kg.",
+      "diaQty": 1000,
       "diaUnit": "g",
-      "diaPrecioTotal": 1012.5,
+      "diaPrecioTotal": 2090,
       "match": "curado"
     },
     {
