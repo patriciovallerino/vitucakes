@@ -11,9 +11,10 @@ Si seguís estos pasos, en menos de 30 minutos tenés la app andando con todos l
 Necesitás:
 
 1. **La carpeta `vitucakes/`** (tiene todo el código).
-2. **Una de estas dos** para los datos:
+2. **Una de estas opciones** para los datos:
    - Acceso al proyecto **Firebase `vitucakes`** (cuenta Google de Patricio) → los datos ya están en la nube, no hace falta nada más.
-   - O un **`vitucakes-backup-AAAA-MM-DD.json`** → lo importás y la app lo sube a la nube.
+   - Un **`vitucakes-backup-AAAA-MM-DD.json`** → lo importás y la app lo sube a la nube.
+   - **Tu propio Firebase** (gratis, ver **Parte 3B**) + un backup → la carpeta queda **100% independiente**, sin depender de la cuenta de nadie.
 
 Con eso, en cualquier computadora moderna, tenés la app de vuelta.
 
@@ -99,6 +100,65 @@ Depende de a qué Firebase apunte la app (la config está en `src/firebase.js`):
 4. Listo: esos datos quedan en la nube y los ve cualquier dispositivo.
 
 > Si ya pasaste la pantalla inicial y querés restaurar un backup igual: botón **💾** en Productos → "Restaurar desde copia" (requiere PIN).
+
+---
+
+## Parte 3B — Hacer la carpeta 100% independiente (tu propio Firebase)
+
+Por defecto la app usa el **Firebase de Patricio** (la config está en `src/firebase.js`), así que los datos viven en SU proyecto de la nube. Si querés que la carpeta sea **totalmente independiente** —que no dependa de la cuenta de nadie— armá tu **propio proyecto Firebase**. Es **gratis**, no pide tarjeta y son ~15 minutos. Una sola vez.
+
+> ¿Cuándo te conviene esto? Si la app va a quedar en manos de otra persona, si querés tu copia 100% propia, o si perdiste el acceso al proyecto original.
+
+### Paso 3B.1 — Crear el proyecto
+1. Entrá a https://console.firebase.google.com/ y logueate con **cualquier** cuenta de Google.
+2. Tocá **"Agregar proyecto" / "Add project"** → ponele un nombre (ej. `vitucakes-mio`) → "Continuar".
+3. Si te ofrece Google Analytics, podés **desactivarlo** (no hace falta) → "Crear proyecto".
+
+### Paso 3B.2 — Crear la base de datos (Firestore)
+1. Menú izquierdo: **Build → Firestore Database** → **"Create database"**.
+2. Elegí una ubicación (ej. `southamerica-east1`) → "Next".
+3. Empezá en **modo producción** ("Start in production mode") → "Enable". (Las reglas las ponés en el Paso 3B.4.)
+
+### Paso 3B.3 — Activar el login anónimo
+La app entra "de incógnito" para poder guardar (sin pantalla de login). Hay que habilitarlo:
+1. **Build → Authentication** → "Get started".
+2. Pestaña **Sign-in method** → en la lista elegí **Anonymous** → **Enable** → Save.
+
+### Paso 3B.4 — Poner las reglas de seguridad
+1. **Firestore Database → pestaña Rules**.
+2. Borrá lo que haya y pegá **exactamente** esto:
+   ```
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /vitucakes/{doc} {
+         allow read: if true;
+         allow write: if request.auth != null;
+       }
+     }
+   }
+   ```
+3. Tocá **"Publish"**. (Esto = lectura pública, escritura solo con sesión iniciada — igual que el original.)
+
+### Paso 3B.5 — Sacar la config del proyecto
+1. Arriba a la izquierda, tocá la **⚙️ → Project settings**.
+2. Bajá hasta **"Your apps"** y tocá el ícono **`</>`** (Web).
+3. Ponele un apodo (ej. `vitucakes-web`) → **"Register app"**. (NO marques "Firebase Hosting", no hace falta.)
+4. Te va a mostrar un bloque que arranca con `const firebaseConfig = { ... }`. **Copiá ese objeto entero** (las líneas `apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`).
+
+### Paso 3B.6 — Pegar la config en la carpeta
+1. Abrí el archivo **`src/firebase.js`** con cualquier editor de texto (hasta el Bloc de notas sirve).
+2. Buscá el bloque que dice `const firebaseConfig = { ... }` y **reemplazalo** por el que copiaste de tu proyecto.
+3. Guardá el archivo.
+
+### Paso 3B.7 — Cargar los datos
+1. Arrancá la app (`bash arrancar.sh` o `npm run dev`).
+2. Como tu Firestore arranca **vacío**, vas a ver la pantalla **"Inicializar datos"** → tocá **"Desbloquear con PIN"**, poné el PIN → **"Importar desde un backup"** → elegí tu `vitucakes-backup-AAAA-MM-DD.json`.
+3. Confirmá. Listo: los datos quedan en **TU** Firebase.
+
+✅ **A partir de acá, la carpeta + tu Firebase son 100% tuyos** — no dependen de la cuenta de Patricio ni de nadie. Si después publicás en Netlify (Parte 4), usa el mismo `src/firebase.js`, así que sincroniza igual entre dispositivos.
+
+> 🔎 Nota: lo único externo que queda es `corsproxy.io` (un proxy gratis que usa la app SOLO para leer catálogos de la competencia y el refresco manual de precios). No afecta tus datos; si algún día deja de andar, esas funciones puntuales quedan sin actualizar, nada más.
 
 ---
 
@@ -257,8 +317,9 @@ Importá tu backup más reciente. Si no tenés backup → te quedaste con la pre
 ## En resumen
 
 1. **Carpeta `vitucakes/` + Node 20 + 30 min** → tenés la app andando.
-2. **Datos**: viven en **Firebase** (nube). Con acceso al proyecto `vitucakes` aparecen solos; si no, un **backup JSON** + la pantalla "Inicializar datos" los repone.
-3. **Netlify Drop** (opcional) → URL pública nueva (apuntando al mismo Firebase).
-4. **Cualquier IA o dev React** → podés modificar el código si querés.
+2. **Datos**: viven en **Firebase** (nube). Con acceso al proyecto `vitucakes` aparecen solos; si no, un **backup JSON** + "Inicializar datos" los repone.
+3. **Independencia total** (opcional): armá **tu propio Firebase** (**Parte 3B**) + importá un backup → la carpeta no depende de la cuenta de nadie.
+4. **Netlify Drop** (opcional) → URL pública nueva (apuntando al mismo Firebase).
+5. **Cualquier IA o dev React** → podés modificar el código si querés.
 
-**El código está todo en esta carpeta.** Los **datos** viven en Firebase (nube) — guardá backups igual, por las dudas. Con la carpeta + acceso a Firebase (o un backup), nada se pierde.
+**El código está todo en esta carpeta.** Para que sea **100% independiente** (sin depender de la cuenta de nadie), armá tu propio Firebase con la **Parte 3B** y guardá un **backup JSON**: con eso, la carpeta sola se reconstruye entera.
