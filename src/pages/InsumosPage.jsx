@@ -11,7 +11,7 @@ const formatDate = (iso) => {
   return `${d}/${m}/${y}`
 }
 
-export default function InsumosPage({ insumos, setInsumos, recetas = [], onActualizarPrecios, onCargarStock }) {
+export default function InsumosPage({ insumos, setInsumos, recetas = [], onActualizarPrecios, onCargarStock, onMarcarPapeleria }) {
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState(null) // insumo a editar, o null = nuevo
   const [search, setSearch] = useState('')
@@ -115,6 +115,15 @@ export default function InsumosPage({ insumos, setInsumos, recetas = [], onActua
             </button>
           )
         })()}
+        {canEdit && onMarcarPapeleria && !search && (
+          <button
+            onClick={onMarcarPapeleria}
+            className="w-full text-left text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2.5 flex items-center justify-between active:scale-[0.99] transition-transform"
+          >
+            <span>🏷️ Marcar insumos de papelería</span>
+            <span className="text-blue-300">›</span>
+          </button>
+        )}
         {filtered.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <div className="text-5xl mb-3">🧂</div>

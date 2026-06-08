@@ -3,17 +3,19 @@ import BottomSheet from '../components/BottomSheet'
 import { calcCostoReceta, formatARS, MARGEN } from '../utils/calc'
 import { matchesConDetalle, promedioCompetencia, recetasParaResolver } from '../utils/competencia'
 import { useEditGate, LockToggle } from '../hooks/useEditGate'
+import { hayPapeleriaMarcada, productosSinPackaging } from '../utils/papeleria'
 
 const EMPTY_RECETA = { nombre: '', rinde: '', unidadRinde: 'unidades', ingredientes: [], descripcion: '' }
 const EMPTY_ING = { insumoId: '', cantidad: '' }
 
-export default function RecetasPage({ recetas, setRecetas, insumos, competidoras = [], onSelect, onResolverMatches, onBackup }) {
+export default function RecetasPage({ recetas, setRecetas, insumos, competidoras = [], onSelect, onResolverMatches, onBackup, onMarcarPapeleria }) {
   const [open, setOpen] = useState(false)
   const [editId, setEditId] = useState(null)
   const [form, setForm] = useState(EMPTY_RECETA)
   const [ingForm, setIngForm] = useState(EMPTY_ING)
   const [search, setSearch] = useState('')
   const [deleteId, setDeleteId] = useState(null)
+  const [verSinPackaging, setVerSinPackaging] = useState(false)
   const { canEdit } = useEditGate()
 
   // Orden: por los MÁS usados/abiertos (contador `usos`), no por el último.
@@ -27,6 +29,11 @@ export default function RecetasPage({ recetas, setRecetas, insumos, competidoras
     () => recetasParaResolver(recetas, competidoras),
     [recetas, competidoras],
   )
+
+  // Papelería: si no hay ninguno marcado, pedimos marcarlos. Si hay, avisamos
+  // qué productos no incluyen packaging en su receta.
+  const algunaPapeleria = useMemo(() => hayPapeleriaMarcada(insumos), [insumos])
+  const sinPackaging = useMemo(() => productosSinPackaging(recetas, insumos), [recetas, insumos])
 
   // Banner de recordatorio de backup. Si pasaron más de 14 días desde el
   // último backup, mostramos un aviso amarillo. La fecha se guarda en
@@ -158,6 +165,40 @@ export default function RecetasPage({ recetas, setRecetas, insumos, competidoras
             <span className="text-amber-700 font-bold text-lg flex-shrink-0">›</span>
           </button>
         </div>
+      )}
+
+      {/* Aviso de papelería (solo editores). Primero pide marcar la papelería;
+          una vez marcada, avisa qué productos no la incluyen en su receta. */}
+      {canEdit && recetas.length > 0 && (
+        !algunaPapeleria ? (
+          <div className="px-4 pt-4">
+            <button
+              onClick={onMarcarPapeleria}
+              className="w-full bg-blue-50 border border-blue-200 rounded-2xl px-4 py-3 text-left flex items-center gap-3 active:scale-[0.98] transition-transform"
+            >
+              <span className="text-2xl flex-shrink-0">🏷️</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-blue-900">Marcá tus insumos de papelería</p>
+                <p className="text-xs text-blue-700">Decime cuáles son cajas, bandejas, bolsas… para avisarte qué productos no tienen packaging cargado.</p>
+              </div>
+              <span className="text-blue-400 text-lg flex-shrink-0">›</span>
+            </button>
+          </div>
+        ) : sinPackaging.length > 0 ? (
+          <div className="px-4 pt-4">
+            <button
+              onClick={() => setVerSinPackaging(true)}
+              className="w-full bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 text-left flex items-center gap-3 active:scale-[0.98] transition-transform"
+            >
+              <span className="text-2xl flex-shrink-0">⚠️</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-amber-900">{sinPackaging.length} producto{sinPackaging.length !== 1 ? 's' : ''} sin packaging</p>
+                <p className="text-xs text-amber-800">No tienen caja/bandeja en la receta. Tocá para verlos y agregarlo.</p>
+              </div>
+              <span className="text-amber-700 text-lg flex-shrink-0">›</span>
+            </button>
+          </div>
+        ) : null
       )}
 
       {/* List */}
@@ -396,6 +437,31 @@ export default function RecetasPage({ recetas, setRecetas, insumos, competidoras
             className="w-full py-3.5 rounded-2xl bg-brand-500 text-white font-bold text-base disabled:opacity-40 active:scale-95 transition-transform mt-2"
           >
             {editId ? 'Guardar cambios' : 'Crear producto'}
+          </button>
+        </div>
+      </BottomSheet>
+
+      {/* Productos sin packaging */}
+      <BottomSheet isOpen={verSinPackaging} onClose={() => setVerSinPackaging(false)} title="Productos sin packaging">
+        <div className="space-y-2">
+          <p className="text-xs text-gray-500 mb-2">
+            Estos productos no tienen ningún insumo de papelería en su receta. Tocá uno para agregarle la caja/bandeja.
+          </p>
+          {sinPackaging.map((r) => (
+            <button
+              key={r.id}
+              onClick={() => { setVerSinPackaging(false); openEdit(r) }}
+              className="w-full flex items-center justify-between bg-brand-50 rounded-xl px-3 py-2.5 text-left active:scale-[0.99] transition-transform"
+            >
+              <span className="text-sm font-medium text-gray-800 break-words">{r.nombre}</span>
+              <span className="text-brand-400 flex-shrink-0">›</span>
+            </button>
+          ))}
+          <button
+            onClick={() => { setVerSinPackaging(false); onMarcarPapeleria() }}
+            className="w-full mt-3 py-2.5 rounded-xl bg-gray-100 text-gray-600 font-semibold text-sm"
+          >
+            Configurar qué es papelería
           </button>
         </div>
       </BottomSheet>

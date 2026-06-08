@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import BottomSheet from './BottomSheet'
 
 const UNIDADES = ['kg', 'g', 'l', 'ml', 'u', 'cdas', 'cdtas', 'taza', 'atado']
-const EMPTY = { nombre: '', unidad: 'kg', precioPorUnidad: '', totalPagado: '', cantidadComprada: '', stock: '' }
+const EMPTY = { nombre: '', unidad: 'kg', precioPorUnidad: '', totalPagado: '', cantidadComprada: '', stock: '', esPapeleria: false }
 
 // Sheet para crear/editar un insumo. Reutilizable:
 //  - InsumosPage lo usa para crear y editar desde la lista.
@@ -26,6 +26,7 @@ export default function InsumoEditSheet({ isOpen, insumo, onClose, onSubmit }) {
             totalPagado: '',
             cantidadComprada: '',
             stock: insumo.stock != null ? String(insumo.stock) : '',
+            esPapeleria: !!insumo.esPapeleria,
           }
         : EMPTY,
     )
@@ -49,7 +50,7 @@ export default function InsumoEditSheet({ isOpen, insumo, onClose, onSubmit }) {
   const submit = () => {
     const nombre = form.nombre.trim()
     if (!nombre || computedPrecio <= 0) return
-    const data = { nombre, unidad: form.unidad, precioPorUnidad: computedPrecio }
+    const data = { nombre, unidad: form.unidad, precioPorUnidad: computedPrecio, esPapeleria: form.esPapeleria }
     // Solo tocamos el stock si escribiste algo. Si lo dejás vacío se conserva el
     // stock actual (que se mueve solo con Compras/Ventas).
     if (form.stock !== '') data.stock = parseFloat(form.stock) || 0
@@ -95,6 +96,19 @@ export default function InsumoEditSheet({ isOpen, insumo, onClose, onSubmit }) {
           <input type="number" inputMode="decimal" {...field('stock')} placeholder="0" className="input" />
           <p className="text-[11px] text-gray-400 mt-1">Opcional. Cuánto tenés hoy; después se actualiza solo con Compras y Ventas.</p>
         </div>
+
+        <label className="flex items-center justify-between gap-3 bg-brand-50 rounded-xl px-3 py-2.5 cursor-pointer">
+          <div className="min-w-0">
+            <span className="text-sm font-semibold text-gray-700">Es papelería / packaging</span>
+            <p className="text-[11px] text-gray-400">Cajas, bandejas, bolsas… (para el aviso de productos sin packaging)</p>
+          </div>
+          <input
+            type="checkbox"
+            checked={form.esPapeleria}
+            onChange={(e) => setForm((f) => ({ ...f, esPapeleria: e.target.checked }))}
+            className="w-5 h-5 accent-brand-500 flex-shrink-0"
+          />
+        </label>
 
         <button
           onClick={submit}
