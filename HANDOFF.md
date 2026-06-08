@@ -410,8 +410,8 @@ Resumen:
   4. Sumar Nati's al cron cuando aparezca su Issue
   5. (opcional) extender el scrape EN VIVO de `AgregarCompetidoraPage` a Empretienda/WooCommerce
 - Reglas de workflow agente (lecciones aprendidas):
-  - **El user autorizó mergear PRs sin preguntar** (en Vitucakes). Flujo: crear PR → `gh pr merge --squash` → deploya solo. Excepción: algo de alto riesgo o que pueda perder datos → avisar primero.
-  - **Después de un squash-merge**, para el siguiente PR ramá desde `origin/main` (no desde tu rama vieja); si no, el diff arrastra lo ya mergeado.
+  - **El user autorizó mergear sin preguntar** (en Vitucakes). Excepción: algo de alto riesgo o que pueda perder datos → avisar primero.
+  - ⚠️ **Cómo mergear SIN filtrar el mail (repo público, lección 2026-06-08):** commiteá SIEMPRE con `patriciovallerino@gmail.com` (NUNCA el de Lemon). **NO uses `gh pr merge --squash`**: el squash estampa el commit en `main` con el mail PRIMARIO de la cuenta de GitHub (el de Lemon) y pisa tu config local — "Keep my email private" NO lo evita. **Forma correcta: push directo a `main` con el commit en gmail** → `git commit` (user.email gmail) → `git rebase origin/main` si hace falta → `git push origin <rama>:main` → `git fetch && git reset --hard origin/main`. Podés abrir un PR para registro; GitHub lo marca "merged" al detectar el commit en main. (El 2026-06-08 se reescribió el historial para sacar el mail de Lemon que el squash venía filtrando.)
   - **No mergees antes de pushear todos los commits** — siempre `git push && gh pr merge`.
   - **Verificación de cambios**: hay un dev server vía preview (`launch.json`, puerto 5174) que pega a la base real. Para probar siembra/seed sin ensuciar, sembrá y después limpiá con un script `firebase/firestore` temporal (auth anónima + del docs), y NO te olvides de resetear.
   - **El user trabaja desde una carpeta en Google Drive** (`~/Library/CloudStorage/GoogleDrive-.../Mi unidad/vitucakes`). Hay también una en `~/Documents/General/Personal/vitucakes` que es legacy. Cuidado con confundir las dos.
