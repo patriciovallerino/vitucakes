@@ -12,6 +12,7 @@ import InicializarDatos from './pages/InicializarDatos'
 import ComprasPage from './pages/ComprasPage'
 import VentasPage from './pages/VentasPage'
 import StockInicialPage from './pages/StockInicialPage'
+import MarcarPapeleriaPage from './pages/MarcarPapeleriaPage'
 import BottomNav from './components/BottomNav'
 import { mergeCompetidoras } from './utils/competencia'
 
@@ -68,7 +69,7 @@ export default function App() {
   useEffect(() => {
     if (canEdit) return
     if (page === 'compras' || page === 'ventas') setPage('recetas')
-    else if (page === 'cargar-stock') setPage('insumos')
+    else if (page === 'cargar-stock' || page === 'marcar-papeleria') setPage('insumos')
   }, [canEdit, page])
 
   // Siembra inicial de la base compartida (una sola vez). La dispara el user
@@ -109,10 +110,14 @@ export default function App() {
             recetas={recetas}
             onActualizarPrecios={() => navigate('actualizar-precios')}
             onCargarStock={() => navigate('cargar-stock')}
+            onMarcarPapeleria={() => navigate('marcar-papeleria')}
           />
         )}
         {page === 'cargar-stock' && canEdit && (
           <StockInicialPage insumos={insumos} setInsumos={setInsumos} onBack={() => navigate('insumos')} />
+        )}
+        {page === 'marcar-papeleria' && canEdit && (
+          <MarcarPapeleriaPage insumos={insumos} setInsumos={setInsumos} onBack={() => navigate('insumos')} />
         )}
         {page === 'actualizar-precios' && (
           <ActualizarPreciosPage insumos={insumos} setInsumos={setInsumos} onBack={() => navigate('insumos')} />
@@ -125,6 +130,7 @@ export default function App() {
             competidoras={competidoras}
             onResolverMatches={() => navigate('resolver-matches')}
             onBackup={() => navigate('backup')}
+            onMarcarPapeleria={() => navigate('marcar-papeleria')}
             onSelect={(id) => {
               // Contamos una "apertura" para el orden por más usados. Solo si
               // puede editar: un viewer (cliente) no debe reordenar la lista de todos.
@@ -198,6 +204,7 @@ export default function App() {
         page !== 'resolver-matches' &&
         page !== 'agregar-competidora' &&
         page !== 'cargar-stock' &&
+        page !== 'marcar-papeleria' &&
         page !== 'backup' && <BottomNav current={page} onChange={(p) => navigate(p)} canEdit={canEdit} />}
     </div>
   )
