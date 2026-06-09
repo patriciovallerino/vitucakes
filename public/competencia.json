@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-06-07T15:50:16.671Z",
+  "generadoEn": "2026-06-09T06:29:59.357Z",
   "competidoras": [
     {
       "id": "candelitte",
@@ -113,7 +113,7 @@
         }
       ],
       "errores": [],
-      "updatedAt": "2026-06-07T15:50:19.167Z"
+      "updatedAt": "2026-06-09T06:30:00.380Z"
     },
     {
       "id": "memo-la-pasteleria",
@@ -248,7 +248,7 @@
         }
       ],
       "errores": [],
-      "updatedAt": "2026-06-07T15:50:22.312Z"
+      "updatedAt": "2026-06-09T06:30:04.373Z"
     },
     {
       "id": "silnari",
@@ -514,7 +514,7 @@
           "error": "sin precio"
         }
       ],
-      "updatedAt": "2026-06-07T15:50:29.648Z"
+      "updatedAt": "2026-06-09T06:30:07.446Z"
     },
     {
       "id": "delicias-del-corazon",
@@ -1734,7 +1734,7 @@
         }
       ],
       "errores": [],
-      "updatedAt": "2026-06-07T15:50:52.580Z"
+      "updatedAt": "2026-06-09T06:30:32.500Z"
     },
     {
       "id": "natis-pasteleria",
@@ -2226,7 +2226,7 @@
         }
       ],
       "errores": [],
-      "updatedAt": "2026-06-07T15:50:58.866Z"
+      "updatedAt": "2026-06-09T06:30:34.187Z"
     }
   ]
 }
