@@ -36,17 +36,6 @@ export default function RecetasPage({ recetas, setRecetas, insumos, competidoras
   const algunaPapeleria = useMemo(() => hayPapeleriaMarcada(insumos), [insumos])
   const sinPackaging = useMemo(() => productosSinPackaging(recetas, insumos), [recetas, insumos])
 
-  // Banner de recordatorio de backup. Si pasaron más de 14 días desde el
-  // último backup, mostramos un aviso amarillo. La fecha se guarda en
-  // localStorage cuando el user descarga uno (en BackupPage).
-  const diasSinBackup = useMemo(() => {
-    const last = localStorage.getItem('vitucakes_last_backup_at')
-    if (!last) return Infinity
-    const dias = (Date.now() - parseInt(last, 10)) / (1000 * 60 * 60 * 24)
-    return Math.floor(dias)
-  }, [])
-  const mostrarRecordatorioBackup = diasSinBackup >= 14 && recetas.length > 0
-
   const openAdd = () => { setEditId(null); setForm(EMPTY_RECETA); setIngForm(EMPTY_ING); setIngSearch(''); setOpen(true) }
 
   const openEdit = (r) => {
@@ -131,10 +120,9 @@ export default function RecetasPage({ recetas, setRecetas, insumos, competidoras
               <span>🤔{pendientesMatch.length > 0 ? ` ${pendientesMatch.length}` : ''}</span>
             </button>
           )}
-          {/* Cassette 💾: aparece solo cuando hace falta bajar un backup
-              (≥14 días sin uno o nunca). Si tenés un backup reciente, no
-              hay ruido visual — el banner amarillo abajo también desaparece. */}
-          {onBackup && (mostrarRecordatorioBackup || canEdit) && (
+          {/* Cassette 💾: acceso a la página de backup (bajar/restaurar a mano).
+              Solo para editores; el backup periódico corre automático aparte. */}
+          {onBackup && canEdit && (
             <button
               onClick={onBackup}
               className="w-9 h-9 flex items-center justify-center rounded-full bg-brand-50 text-base flex-shrink-0"
@@ -153,27 +141,6 @@ export default function RecetasPage({ recetas, setRecetas, insumos, competidoras
           className="w-full px-4 py-2.5 rounded-xl bg-brand-50 border border-brand-100 text-sm focus:outline-none focus:ring-2 focus:ring-brand-300"
         />
       </div>
-
-      {/* Banner recordatorio de backup */}
-      {mostrarRecordatorioBackup && onBackup && (
-        <div className="px-4 pt-4">
-          <button
-            onClick={onBackup}
-            className="w-full bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 text-left flex items-center gap-3 active:scale-[0.98] transition-transform"
-          >
-            <span className="text-2xl flex-shrink-0">💾</span>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-amber-900">Bajá un backup</p>
-              <p className="text-xs text-amber-800">
-                {diasSinBackup === Infinity
-                  ? 'Bajá una copia de respaldo por las dudas.'
-                  : `Hace ${diasSinBackup} días que no bajás una copia. Tocá para descargar una.`}
-              </p>
-            </div>
-            <span className="text-amber-700 font-bold text-lg flex-shrink-0">›</span>
-          </button>
-        </div>
-      )}
 
       {/* Aviso de papelería (solo editores). Primero pide marcar la papelería;
           una vez marcada, avisa qué productos no la incluyen en su receta. */}
