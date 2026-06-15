@@ -22,6 +22,9 @@ export default function App() {
   const { canEdit } = useEditGate()
   const [page, setPage] = useState('recetas')
   const [selectedId, setSelectedId] = useState(null)
+  // De qué pantalla se entró al detalle de producto, para que "atrás" vuelva ahí
+  // (lista de productos, o resolver-matches si se tocó el nombre desde ahí).
+  const [detalleOrigen, setDetalleOrigen] = useState('recetas')
 
   // Datos COMPARTIDOS (viven en Firestore, sincronizan en vivo entre todos los
   // dispositivos). Misma interfaz que antes: [valor, setValor], + flag loaded.
@@ -137,6 +140,7 @@ export default function App() {
               if (canEdit) {
                 setRecetas((prev) => prev.map((r) => (r.id === id ? { ...r, usos: (r.usos ?? 0) + 1 } : r)))
               }
+              setDetalleOrigen('recetas')
               navigate('detalle', id)
             }}
           />
@@ -148,6 +152,7 @@ export default function App() {
             competidoras={competidoras}
             onBack={() => navigate('recetas')}
             onAgregarCompetidora={() => navigate('agregar-competidora')}
+            onVerProducto={(id) => { setDetalleOrigen('resolver-matches'); navigate('detalle', id) }}
           />
         )}
         {page === 'agregar-competidora' && (
@@ -188,7 +193,7 @@ export default function App() {
             insumos={insumos}
             setInsumos={setInsumos}
             competidoras={competidoras}
-            onBack={() => navigate('recetas')}
+            onBack={() => navigate(detalleOrigen)}
             onUpdate={(updated) =>
               setRecetas((prev) => prev.map((r) => (r.id === updated.id ? { ...updated, updatedAt: Date.now() } : r)))
             }

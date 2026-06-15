@@ -11,7 +11,7 @@ import { recetasParaResolver } from '../utils/competencia'
 // Una vez que el user confirma un match, esa receta desaparece de la lista.
 // La próxima semana, cuando el cron traiga el JSON actualizado, no se le
 // vuelve a preguntar (la receta ya tiene match guardado).
-export default function ResolverMatchesPage({ recetas, setRecetas, competidoras, onBack, onAgregarCompetidora }) {
+export default function ResolverMatchesPage({ recetas, setRecetas, competidoras, onBack, onAgregarCompetidora, onVerProducto }) {
   const [manualPara, setManualPara] = useState(null) // receta para la que se abre el sheet manual
   const [toast, setToast] = useState(null)
 
@@ -136,7 +136,14 @@ export default function ResolverMatchesPage({ recetas, setRecetas, competidoras,
             <p className="text-[11px] font-semibold text-brand-500 uppercase tracking-wide">
               Tu producto
             </p>
-            <p className="text-base font-bold text-gray-800 mb-3 break-words">{receta.nombre}</p>
+            <button
+              type="button"
+              onClick={() => onVerProducto?.(receta.id)}
+              className="flex items-center gap-1.5 text-left mb-3 active:opacity-60 transition-opacity"
+            >
+              <span className="text-base font-bold text-gray-800 break-words">{receta.nombre}</span>
+              <span className="text-brand-400 flex-shrink-0 font-bold">›</span>
+            </button>
 
             <div className="bg-brand-50 rounded-xl p-3 mb-3">
               <div className="flex items-start justify-between gap-2">
@@ -204,7 +211,14 @@ export default function ResolverMatchesPage({ recetas, setRecetas, competidoras,
             <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">
               Tu producto
             </p>
-            <p className="text-base font-bold text-gray-800 mb-1 break-words">{receta.nombre}</p>
+            <button
+              type="button"
+              onClick={() => onVerProducto?.(receta.id)}
+              className="flex items-center gap-1.5 text-left mb-1 active:opacity-60 transition-opacity"
+            >
+              <span className="text-base font-bold text-gray-800 break-words">{receta.nombre}</span>
+              <span className="text-brand-400 flex-shrink-0 font-bold">›</span>
+            </button>
             <p className="text-xs text-gray-500 mb-3">
               No se encontró un equivalente automático en la competencia.
             </p>
