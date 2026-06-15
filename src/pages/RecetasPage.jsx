@@ -13,6 +13,7 @@ export default function RecetasPage({ recetas, setRecetas, insumos, competidoras
   const [editId, setEditId] = useState(null)
   const [form, setForm] = useState(EMPTY_RECETA)
   const [ingForm, setIngForm] = useState(EMPTY_ING)
+  const [ingSearch, setIngSearch] = useState('')
   const [search, setSearch] = useState('')
   const [deleteId, setDeleteId] = useState(null)
   const [verSinPackaging, setVerSinPackaging] = useState(false)
@@ -46,7 +47,7 @@ export default function RecetasPage({ recetas, setRecetas, insumos, competidoras
   }, [])
   const mostrarRecordatorioBackup = diasSinBackup >= 14 && recetas.length > 0
 
-  const openAdd = () => { setEditId(null); setForm(EMPTY_RECETA); setIngForm(EMPTY_ING); setOpen(true) }
+  const openAdd = () => { setEditId(null); setForm(EMPTY_RECETA); setIngForm(EMPTY_ING); setIngSearch(''); setOpen(true) }
 
   const openEdit = (r) => {
     setEditId(r.id)
@@ -58,6 +59,7 @@ export default function RecetasPage({ recetas, setRecetas, insumos, competidoras
       descripcion: r.descripcion ?? '',
     })
     setIngForm(EMPTY_ING)
+    setIngSearch('')
     setOpen(true)
   }
 
@@ -70,6 +72,7 @@ export default function RecetasPage({ recetas, setRecetas, insumos, competidoras
       setForm((f) => ({ ...f, ingredientes: [...f.ingredientes, { insumoId: ingForm.insumoId, cantidad }] }))
     }
     setIngForm(EMPTY_ING)
+    setIngSearch('')
   }
 
   const removeIngrediente = (insumoId) => {
@@ -100,6 +103,11 @@ export default function RecetasPage({ recetas, setRecetas, insumos, competidoras
   const insumoUnit = (id) => insumos.find((i) => i.id === id)?.unidad ?? ''
 
   const availableInsumos = insumos.filter((i) => !form.ingredientes.find((ing) => ing.insumoId === i.id))
+  const filteredInsumos = useMemo(() => {
+    const q = ingSearch.trim().toLowerCase()
+    if (!q) return availableInsumos
+    return availableInsumos.filter((i) => i.nombre.toLowerCase().includes(q))
+  }, [availableInsumos, ingSearch])
 
   return (
     <div className="flex flex-col min-h-full">
@@ -385,16 +393,34 @@ export default function RecetasPage({ recetas, setRecetas, insumos, competidoras
             {availableInsumos.length > 0 && (
               <div className="bg-gray-50 rounded-2xl p-3 space-y-2">
                 <p className="text-xs font-semibold text-gray-500">Agregar ingrediente</p>
-                <select
-                  value={ingForm.insumoId}
-                  onChange={(e) => setIngForm((f) => ({ ...f, insumoId: e.target.value }))}
+                <input
+                  value={ingSearch}
+                  onChange={(e) => setIngSearch(e.target.value)}
+                  placeholder="🔍 Buscar insumo..."
                   className="input bg-white"
-                >
-                  <option value="">Seleccionar insumo...</option>
-                  {availableInsumos.map((i) => (
-                    <option key={i.id} value={i.id}>{i.nombre} ({i.unidad})</option>
-                  ))}
-                </select>
+                />
+                <div className="max-h-52 overflow-y-auto rounded-xl border border-gray-200 bg-white divide-y divide-gray-100">
+                  {filteredInsumos.length === 0 ? (
+                    <p className="text-xs text-gray-400 px-3 py-3 text-center">
+                      Sin resultados para “{ingSearch.trim()}”
+                    </p>
+                  ) : (
+                    filteredInsumos.map((i) => {
+                      const selected = ingForm.insumoId === i.id
+                      return (
+                        <button
+                          key={i.id}
+                          type="button"
+                          onClick={() => setIngForm((f) => ({ ...f, insumoId: i.id }))}
+                          className={`w-full flex items-center justify-between text-left px-3 py-2.5 text-sm transition-colors ${selected ? 'bg-brand-100 text-brand-700 font-semibold' : 'text-gray-700 active:bg-brand-50'}`}
+                        >
+                          <span>{i.nombre}</span>
+                          <span className="text-xs text-gray-400">{i.unidad}</span>
+                        </button>
+                      )
+                    })
+                  )}
+                </div>
                 <div className="flex gap-2">
                   <input
                     type="number"
