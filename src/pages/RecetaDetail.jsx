@@ -4,6 +4,7 @@ import { calcCostoInsumos, calcGastosIndirectos, calcCostoTotal, formatARS, GAST
 import { proponerSugerencia, matchesConDetalle, promedioCompetencia, productosDisponibles } from '../utils/competencia'
 import { useEditGate, LockToggle } from '../hooks/useEditGate'
 import InsumoEditSheet from '../components/InsumoEditSheet'
+import RecetaEditSheet from '../components/RecetaEditSheet'
 
 const todayISO = () => new Date().toISOString().slice(0, 10)
 
@@ -13,7 +14,15 @@ export default function RecetaDetail({ receta, insumos, setInsumos, competidoras
   const [confirmConvertir, setConfirmConvertir] = useState(false)
   const [copiado, setCopiado] = useState(false)
   const [editingInsumo, setEditingInsumo] = useState(null)
+  const [editandoReceta, setEditandoReceta] = useState(false)
   const { canEdit } = useEditGate()
+
+  // Editar la receta entera (nombre, rinde, ingredientes, descripción) sin salir
+  // del detalle. Preserva el resto de los campos (matches, usos, etc.).
+  const guardarReceta = (data) => {
+    onUpdate?.({ ...receta, ...data })
+    setEditandoReceta(false)
+  }
 
   // Editar un ingrediente SIN salir de la receta: abre el editor acá mismo.
   // Cuenta una "apertura" del insumo para el orden por más usados.
@@ -180,6 +189,16 @@ export default function RecetaDetail({ receta, insumos, setInsumos, competidoras
           </button>
           <h1 className="text-xl font-bold text-gray-800 flex-1 break-words">{receta.nombre}</h1>
           <LockToggle />
+          {canEdit && onUpdate && (
+            <button
+              onClick={() => setEditandoReceta(true)}
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-brand-50"
+              title="Editar producto"
+              aria-label="Editar producto"
+            >
+              ✏️
+            </button>
+          )}
           {canEdit && (
             <button
               onClick={() => setConfirmDelete(true)}
@@ -496,6 +515,16 @@ export default function RecetaDetail({ receta, insumos, setInsumos, competidoras
         insumo={editingInsumo}
         onClose={() => setEditingInsumo(null)}
         onSubmit={guardarInsumo}
+      />
+
+      {/* Editor de la receta entera (lápiz del header): mismo form que en la
+          lista, pero sin salir del detalle. */}
+      <RecetaEditSheet
+        isOpen={editandoReceta}
+        onClose={() => setEditandoReceta(false)}
+        receta={receta}
+        insumos={insumos}
+        onSave={guardarReceta}
       />
 
       {/* Confirmar convertir a 1 unidad */}
