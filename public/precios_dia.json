@@ -1,5 +1,5 @@
 {
-  "generadoEn": "2026-06-16T07:45:42.167Z",
+  "generadoEn": "2026-06-23T06:29:32.548Z",
   "fuente": "Día",
   "items": [
     {
@@ -24,12 +24,12 @@
     },
     {
       "nombre": "Azúcar",
-      "precio": 0.995,
+      "precio": 1.18,
       "unidad": "g",
-      "producto": "Azúcar Ledesma Clásica 1 Kg.",
-      "diaQty": 1000,
+      "producto": "Azúcar Azucel Común tipo \"A\" 500 Gr.",
+      "diaQty": 500,
       "diaUnit": "g",
-      "diaPrecioTotal": 995,
+      "diaPrecioTotal": 590,
       "match": "curado"
     },
     {
@@ -144,12 +144,12 @@
     },
     {
       "nombre": "Chocolate",
-      "precio": 20.9474,
+      "precio": 33.625,
       "unidad": "g",
-      "producto": "Chocolate Arcor Leche y Maní 95 Gr.",
-      "diaQty": 95,
+      "producto": "Chocolate con leche DIA 80 Gr.",
+      "diaQty": 80,
       "diaUnit": "g",
-      "diaPrecioTotal": 1990,
+      "diaPrecioTotal": 2690,
       "match": "auto"
     },
     {
@@ -163,6 +163,16 @@
       "match": "curado"
     },
     {
+      "nombre": "Cinta",
+      "precio": 2165,
+      "unidad": "u",
+      "producto": "Cinta Embalar Transparente Candela 1 Ud.",
+      "diaQty": 1,
+      "diaUnit": "u",
+      "diaPrecioTotal": 2165,
+      "match": "auto"
+    },
+    {
       "nombre": "Coco rayado",
       "precio": 30.04,
       "unidad": "g",
@@ -174,12 +184,12 @@
     },
     {
       "nombre": "Crema de leche",
-      "precio": 7.28,
+      "precio": 9.1,
       "unidad": "g",
-      "producto": "Crema de Leche Para Batir Las Tres Niñas 500 Ml.",
+      "producto": "Crema De Leche Para Cocinar Las Tres Niñas 500 Ml.",
       "diaQty": 500,
       "diaUnit": "ml",
-      "diaPrecioTotal": 3640,
+      "diaPrecioTotal": 4550,
       "match": "curado"
     },
     {
@@ -264,12 +274,12 @@
     },
     {
       "nombre": "Harina 0000",
-      "precio": 0.4,
+      "precio": 1.1,
       "unidad": "g",
-      "producto": "Harina De Trigo 0000 Cañuelas 1 Kg.",
+      "producto": "Harina de Trigo 0000 DIA 1 Kg.",
       "diaQty": 1000,
       "diaUnit": "g",
-      "diaPrecioTotal": 400,
+      "diaPrecioTotal": 1100,
       "match": "curado"
     },
     {
@@ -354,12 +364,12 @@
     },
     {
       "nombre": "Levadura",
-      "precio": 9.82,
+      "precio": 9.99,
       "unidad": "g",
-      "producto": "Levadura DIA 50 Gr.",
-      "diaQty": 50,
+      "producto": "Levadura Familiar Calsa 100 Gr.",
+      "diaQty": 100,
       "diaUnit": "g",
-      "diaPrecioTotal": 491,
+      "diaPrecioTotal": 999,
       "match": "auto"
     },
     {
@@ -374,12 +384,12 @@
     },
     {
       "nombre": "Manteca",
-      "precio": 17.255,
+      "precio": 16.79,
       "unidad": "g",
-      "producto": "Manteca DIA Calidad Extra 200 Gr.",
+      "producto": "Manteca Tonadita Extra calidad 200 Gr.",
       "diaQty": 200,
       "diaUnit": "g",
-      "diaPrecioTotal": 3451,
+      "diaPrecioTotal": 3358,
       "match": "curado"
     },
     {
@@ -524,22 +534,22 @@
     },
     {
       "nombre": "Premezcla",
-      "precio": 4.3556,
+      "precio": 4.4889,
       "unidad": "g",
       "producto": "Premezcla Para Bizcochuelo Limon Cuquets 450 Gr.",
       "diaQty": 450,
       "diaUnit": "g",
-      "diaPrecioTotal": 1960,
+      "diaPrecioTotal": 2020,
       "match": "curado"
     },
     {
       "nombre": "Queso Crema",
-      "precio": 10.1931,
+      "precio": 10.7107,
       "unidad": "g",
-      "producto": "Queso Doble Crema DIA Clásico 290 Gr.",
-      "diaQty": 290,
+      "producto": "Queso Crema Clasico Ricrem 280 Gr.",
+      "diaQty": 280,
       "diaUnit": "g",
-      "diaPrecioTotal": 2956,
+      "diaPrecioTotal": 2999,
       "match": "curado"
     },
     {
@@ -564,12 +574,12 @@
     },
     {
       "nombre": "Salsa de tomate",
-      "precio": 3.2382,
+      "precio": 3.95,
       "unidad": "g",
-      "producto": "Salsa de Tomate Filetto DIA Doypack 340 Gr.",
+      "producto": "Salsa Knorr Pizza 340 Gr.",
       "diaQty": 340,
       "diaUnit": "g",
-      "diaPrecioTotal": 1101,
+      "diaPrecioTotal": 1343,
       "match": "curado"
     },
     {
@@ -584,22 +594,22 @@
     },
     {
       "nombre": "Tomate",
-      "precio": 4.99,
+      "precio": 5.39,
       "unidad": "g",
       "producto": "Tomate Redondo x Kg.",
       "diaQty": 1000,
       "diaUnit": "g",
-      "diaPrecioTotal": 4990,
+      "diaPrecioTotal": 5390,
       "match": "curado"
     },
     {
       "nombre": "Tomate cherry",
-      "precio": 8.99,
+      "precio": 7.19,
       "unidad": "g",
       "producto": "Tomate Cherry x Kg.",
       "diaQty": 1000,
       "diaUnit": "g",
-      "diaPrecioTotal": 8990,
+      "diaPrecioTotal": 7190,
       "match": "curado"
     },
     {
